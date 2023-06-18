@@ -13,7 +13,10 @@ export const appRouter = router({
       })
     )
     .query(({ input }) => {
-      return `hello ${input.name}`
+      return {
+        greeting: `hello ${input.name}`,
+        date: new Date(),
+      };
     }),
 });
 
