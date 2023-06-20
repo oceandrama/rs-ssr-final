@@ -8,9 +8,5 @@ export default function CreateEvent() {
     mutate(data);
   };
 
-  return (
-    <div className="mx-auto max-w-4xl">
-      <CreateEventForm onSubmit={handleSubmit} />
-    </div>
-  );
+  return <CreateEventForm onSubmit={handleSubmit} />;
 }
