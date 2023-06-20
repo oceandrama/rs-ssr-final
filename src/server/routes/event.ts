@@ -4,8 +4,17 @@ import { isAuth, procedure, router } from "../trpc";
 import { z } from "zod";
 
 export const eventRouter = router({
-  findMany: procedure.query(() => {
-    return prisma.event.findMany();
+  findMany: procedure.query(async ({ ctx: { user } }) => {
+    const events = await prisma.event.findMany({
+      include: {
+        participations: true,
+      },
+    });
+
+    return events.map(({ participations, ...event }) => ({
+      ...event,
+      isJoined: participations.some(({ userId }) => userId === user?.id),
+    }));
   }),
   findUnique: procedure
     .input(
