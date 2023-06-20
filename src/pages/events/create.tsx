@@ -15,5 +15,5 @@ export default function CreateEvent() {
     mutate(data);
   };
 
-  return <CreateEventForm onSubmit={handleSubmit} />;
+  return <CreateEventForm onSubmit={handleSubmit} onCancel={router.back} />;
 }

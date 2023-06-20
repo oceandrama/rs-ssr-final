@@ -4,14 +4,27 @@ import { CreateEventSchema } from "@/shared/api";
 
 type CreateEventFormProps = {
   onSubmit: (data: CreateEventSchema) => void;
+  onCancel: () => void;
+  okText?: string;
+  defaultValues?: CreateEventSchema;
 };
 
-export const CreateEventForm = ({ onSubmit }: CreateEventFormProps) => {
+export const CreateEventForm = ({
+  onSubmit,
+  onCancel,
+  okText = "Создать",
+  defaultValues,
+}: CreateEventFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<CreateEventSchema>({
+    defaultValues: {
+      ...defaultValues,
+      // @ts-expect-error Значением input[type=date] может быть только строка вида yyyy-mm-dd
+      date: defaultValues?.date.toISOString().substring(0, 10),
+    },
     resolver: zodResolver(CreateEventSchema),
     mode: "onChange",
   });
@@ -23,9 +36,6 @@ export const CreateEventForm = ({ onSubmit }: CreateEventFormProps) => {
           <h2 className="text-base font-semibold leading-7 text-gray-900">
             Событие
           </h2>
-          <p className="mt-1 text-sm leading-6 text-gray-600">
-            Заполните форму для создания события
-          </p>
 
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-4">
@@ -106,6 +116,7 @@ export const CreateEventForm = ({ onSubmit }: CreateEventFormProps) => {
         <button
           type="button"
           className="text-sm font-semibold leading-6 text-gray-900"
+          onClick={onCancel}
         >
           Отмена
         </button>
@@ -113,7 +124,7 @@ export const CreateEventForm = ({ onSubmit }: CreateEventFormProps) => {
           type="submit"
           className="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
         >
-          Создать
+          {okText}
         </button>
       </div>
     </form>

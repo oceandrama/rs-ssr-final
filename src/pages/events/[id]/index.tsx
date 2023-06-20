@@ -1,13 +1,14 @@
 import { EventDetail } from "@/entities/event";
+import { EditEventButton } from "@/features/create-event";
 import { trpc } from "@/shared/api";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function Event() {
   const router = useRouter();
   const session = useSession();
 
-  const { data, isLoading } = trpc.event.findUnique.useQuery({
+  const { data: event, isLoading } = trpc.event.findUnique.useQuery({
     id: Number(router.query.id),
   });
 
@@ -19,9 +20,18 @@ export default function Event() {
     return "Forbidden";
   }
 
-  if (!data) {
+  if (!event) {
     return "No data";
   }
 
-  return <EventDetail {...data} />;
+  return (
+    <EventDetail
+      {...event}
+      action={
+        session.data?.user.id === event.authorId && (
+          <EditEventButton id={event.id} />
+        )
+      }
+    />
+  );
 }
